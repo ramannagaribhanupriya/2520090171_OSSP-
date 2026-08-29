@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Node
+{
+    int data;
+    struct Node *next;
+};
+
+int main()
+{
+    int size = 2;
+    int count = 0;
+    int i;
+
+    /* Dynamic array */
+    int *array = malloc(size * sizeof(int));
+
+    if (array == NULL)
+    {
+        printf("Memory allocation failed\n");
+        return 1;
+    }
+
+    printf("Dynamic Array:\n");
+
+    for (i = 0; i < 5; i++)
+    {
+        if (count == size)
+        {
+            size *= 2;
+
+            array = realloc(array, size * sizeof(int));
+
+            if (array == NULL)
+            {
+                printf("Memory reallocation failed\n");
+                return 1;
+            }
+
+            printf("Array resized to %d elements\n", size);
+        }
+
+        array[count++] = (i + 1) * 10;
+    }
+
+    printf("Array elements: ");
+
+    for (i = 0; i < count; i++)
+    {
+        printf("%d ", array[i]);
+    }
+
+    printf("\n");
+
+    /* Linked List */
+    struct Node *head = NULL;
+    struct Node *temp;
+
+    for (i = 1; i <= 3; i++)
+    {
+        temp = malloc(sizeof(struct Node));
+
+        if (temp == NULL)
+        {
+            printf("Memory allocation failed\n");
+            return 1;
+        }
+
+        temp->data = i * 100;
+        temp->next = head;
+        head = temp;
+    }
+
+    printf("Linked List: ");
+
+    temp = head;
+
+    while (temp != NULL)
+    {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+
+    printf("\n");
+
+    /* Free linked list memory */
+    while (head != NULL)
+    {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+
+    /* Free dynamic array */
+    free(array);
+
+    printf("All dynamically allocated memory released.\n");
+
+    return 0;
+}
