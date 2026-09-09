@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <string.h>
+
+#define FIFO1 "client_to_server"
+#define FIFO2 "server_to_client"
+
+int main() {
+    char message[100], response[100];
+
+    mkfifo(FIFO1, 0666);
+    mkfifo(FIFO2, 0666);
+
+    printf("Enter message: ");
+    fgets(message, sizeof(message), stdin);
+
+    int fd1 = open(FIFO1, O_WRONLY);
+    write(fd1, message, strlen(message) + 1);
+    close(fd1);
+
+    int fd2 = open(FIFO2, O_RDONLY);
+    read(fd2, response, sizeof(response));
+    close(fd2);
+
+    printf("Server response: %s\n", response);
+
+    return 0;
+}
