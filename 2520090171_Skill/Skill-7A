@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+
+int main() {
+    pid_t pid, result;
+    int status;
+
+    printf("Parent process started.\n");
+
+    pid = fork();
+
+    if (pid < 0) {
+        printf("Child process creation failed.\n");
+        return 1;
+    }
+
+    if (pid == 0) {
+        printf("Child process started.\n");
+        sleep(2);
+        printf("Child process completed.\n");
+        exit(0);
+    }
+    else {
+        printf("Parent is waiting for child...\n");
+
+        result = waitpid(pid, &status, 0);
+
+        if (result == pid) {
+            if (WIFEXITED(status)) {
+                printf("Child exited normally with status: %d\n",
+                       WEXITSTATUS(status));
+            }
+        }
+
+        printf("Parent process completed.\n");
+    }
+
+    return 0;
+}
