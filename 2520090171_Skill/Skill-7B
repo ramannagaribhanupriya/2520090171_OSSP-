@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+int main() {
+    char *path;
+    char *dir;
+    char path_copy[1024];
+    char command[100];
+
+    printf("Enter command to search: ");
+    scanf("%s", command);
+
+    path = getenv("PATH");
+
+    if (path == NULL) {
+        printf("PATH variable not found.\n");
+        return 1;
+    }
+
+    strcpy(path_copy, path);
+
+    dir = strtok(path_copy, ":");
+
+    while (dir != NULL) {
+        char fullpath[1024];
+
+        snprintf(fullpath, sizeof(fullpath), "%s/%s", dir, command);
+
+        if (access(fullpath, X_OK) == 0) {
+            printf("Executable found: %s\n", fullpath);
+            printf("Permission: Executable\n");
+            return 0;
+        }
+
+        dir = strtok(NULL, ":");
+    }
+
+    printf("Command '%s' not found in PATH.\n", command);
+
+    return 0;
+}
