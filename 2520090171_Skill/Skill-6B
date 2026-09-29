@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+
+int main() {
+    pid_t pid;
+
+    printf("Parent process started.\n");
+
+    pid = fork();
+
+    if (pid < 0) {
+        printf("Error: Unable to create child process.\n");
+        return 1;
+    }
+
+    if (pid == 0) {
+        printf("Child process created.\n");
+        printf("Executing ls command...\n");
+
+        execlp("ls", "ls", "-l", NULL);
+
+        printf("Error: Execution failed.\n");
+        exit(1);
+    }
+    else {
+        wait(NULL);
+        printf("Parent process: Child execution completed.\n");
+    }
+
+    return 0;
+}
